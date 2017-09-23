@@ -2,6 +2,6 @@
 
 
 ### To do:
-+ Move AccelerometerEventListener to separate class file
-+ Add LinearAcceleration to remove the effects of gravity
-+ Add low pass filter
++ Add low pass filter  
++ Get new data for each direction  
++ Create state machine to determine direction

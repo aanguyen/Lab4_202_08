@@ -1,8 +1,6 @@
 package lab4_202_08.uwaterloo.ca.lab4_202_08;
 
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        final Sensor accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        //final SensorEventListener accelHandler = new AccelerometerEventListener(accelText, graph);
+        final Sensor accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         final AccelerometerEventListener accelHandler = new AccelerometerEventListener(accelText, graph);
         sensorManager.registerListener(accelHandler, accelSensor, sensorManager.SENSOR_DELAY_GAME);
         myButton.setOnClickListener(new View.OnClickListener() {

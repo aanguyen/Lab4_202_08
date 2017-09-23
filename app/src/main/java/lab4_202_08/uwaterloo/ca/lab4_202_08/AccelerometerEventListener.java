@@ -24,7 +24,7 @@ public class AccelerometerEventListener implements SensorEventListener {
     public void onAccuracyChanged(Sensor s, int i) {}
 
     public void onSensorChanged(SensorEvent se) {
-        if (se.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+        if (se.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
             //Filter point here
             float[] filteredReading = new float[3];
 
