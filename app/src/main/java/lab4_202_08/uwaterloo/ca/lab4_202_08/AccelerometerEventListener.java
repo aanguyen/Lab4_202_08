@@ -14,7 +14,10 @@ import ca.uwaterloo.sensortoy.LineGraphView;
 public class AccelerometerEventListener implements SensorEventListener {
     TextView output;
     LineGraphView outGraph;
-    public float[][] storedVals = new float[3][100];
+    private final int READINGS_SAVED = 100;
+    public float[][] storedVals = new float[3][READINGS_SAVED];
+    public float[] filteredReading = {0,0,0};
+    final float FILTER_CONSTANT = 6;
     //constructor
     public AccelerometerEventListener(TextView outputView, LineGraphView graph) {
         output = outputView;
@@ -25,24 +28,31 @@ public class AccelerometerEventListener implements SensorEventListener {
 
     public void onSensorChanged(SensorEvent se) {
         if (se.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            //Filter point here
-            float[] filteredReading = new float[3];
+            //Filtering reading based on filter constant
+            for (int i = 0; i < 3; i++) {
+                filteredReading[i] += (se.values[i] - filteredReading[i]) / FILTER_CONSTANT;
+            }
 
-
-            storeValue(se.values[0], se.values[1], se.values[2]);
-            outGraph.addPoint(se.values);
-            output.setText(String.format("X:%.3f\nY:%.3f \nZ:%.3f", se.values[0], se.values[1], se.values[2]));
+//            storeValue(se.values[0], se.values[1], se.values[2]);
+//            outGraph.addPoint(se.values);
+//            output.setText(String.format("X:%.3f\nY:%.3f \nZ:%.3f", se.values[0], se.values[1], se.values[2]));
+            storeValue(filteredReading[0], filteredReading[1], filteredReading[2]);
+            outGraph.addPoint(filteredReading);
+            output.setText(String.format("X:%.3f\nY:%.3f \nZ:%.3f", filteredReading[0], filteredReading[1], filteredReading[2]));
         }
     }
     private void storeValue(float x, float y, float z) {
-        for (int i = 0; i < 99; i++) {
-            storedVals[0][i] = storedVals[0][i+1];
-            storedVals[1][i] = storedVals[1][i+1];
-            storedVals[2][i] = storedVals[2][i+1];
+        for (int i = 0; i < (READINGS_SAVED)-1; i++) {
+            for (int j = 0; j < 3; j++) {
+                storedVals[j][i] = storedVals[j][i+1];
+            }
+//            storedVals[0][i] = storedVals[0][i+1];
+//            storedVals[1][i] = storedVals[1][i+1];
+//            storedVals[2][i] = storedVals[2][i+1];
         }
-        storedVals[0][99] = x;
-        storedVals[1][99] = y;
-        storedVals[2][99] = z;
+        storedVals[0][READINGS_SAVED-1] = x;
+        storedVals[1][READINGS_SAVED-1] = y;
+        storedVals[2][READINGS_SAVED-1] = z;
     }
     public float[] getReadingAtIndex(int i) {
         return new float[]{storedVals[0][i], storedVals[1][i], storedVals[2][i]};

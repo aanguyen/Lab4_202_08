@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 PrintWriter pw = null;
                 try {
                     //CHANGE CSV NAME BELOW to reflect which direction data it is!!
-                    File file = new File(getExternalFilesDir(APP_NAME), "DATA.csv");
+                    File file = new File(getExternalFilesDir(APP_NAME), "UP_DATA_FILTER3.csv");
                     pw = new PrintWriter(file);
                     for (int i = 0; i < 100; i++) {
                         float[] readingToPrint = accelHandler.getReadingAtIndex(i);
