@@ -51,14 +51,14 @@ public class MainActivity extends AppCompatActivity {
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         final Sensor accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        final AccelerometerEventListener accelHandler = new AccelerometerEventListener(accelText, graph);
+        final AccelerometerEventListener accelHandler = new AccelerometerEventListener(accelText, graph, title);
         sensorManager.registerListener(accelHandler, accelSensor, sensorManager.SENSOR_DELAY_GAME);
         myButton.setOnClickListener(new View.OnClickListener() {
             public void onClick (View v) {
                 PrintWriter pw = null;
                 try {
                     //CHANGE CSV NAME BELOW to reflect which direction data it is!!
-                    File file = new File(getExternalFilesDir(APP_NAME), "UP_DATA_FILTER3.csv");
+                    File file = new File(getExternalFilesDir(APP_NAME), "LEFT_DATA_FILTER_5.csv");
                     pw = new PrintWriter(file);
                     for (int i = 0; i < 100; i++) {
                         float[] readingToPrint = accelHandler.getReadingAtIndex(i);
@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("File Write Error: ", e.toString());
                 } finally {
                     if (pw != null) {
-                        //Probably redundant but include anyways to avoid further NPE
                         pw.flush();
                         pw.close();
                     }

@@ -13,15 +13,19 @@ import ca.uwaterloo.sensortoy.LineGraphView;
 
 public class AccelerometerEventListener implements SensorEventListener {
     TextView output;
+    TextView direction;
     LineGraphView outGraph;
     private final int READINGS_SAVED = 100;
     public float[][] storedVals = new float[3][READINGS_SAVED];
     public float[] filteredReading = {0,0,0};
     final float FILTER_CONSTANT = 6;
+    final float X_THRESH = 0;
+    final float Y_THRESH = 0;
     //constructor
-    public AccelerometerEventListener(TextView outputView, LineGraphView graph) {
+    public AccelerometerEventListener(TextView outputView, LineGraphView graph, TextView directionView) {
         output = outputView;
         outGraph = graph;
+        direction = directionView;
     }
 
     public void onAccuracyChanged(Sensor s, int i) {}
@@ -33,9 +37,6 @@ public class AccelerometerEventListener implements SensorEventListener {
                 filteredReading[i] += (se.values[i] - filteredReading[i]) / FILTER_CONSTANT;
             }
 
-//            storeValue(se.values[0], se.values[1], se.values[2]);
-//            outGraph.addPoint(se.values);
-//            output.setText(String.format("X:%.3f\nY:%.3f \nZ:%.3f", se.values[0], se.values[1], se.values[2]));
             storeValue(filteredReading[0], filteredReading[1], filteredReading[2]);
             outGraph.addPoint(filteredReading);
             output.setText(String.format("X:%.3f\nY:%.3f \nZ:%.3f", filteredReading[0], filteredReading[1], filteredReading[2]));
@@ -46,9 +47,6 @@ public class AccelerometerEventListener implements SensorEventListener {
             for (int j = 0; j < 3; j++) {
                 storedVals[j][i] = storedVals[j][i+1];
             }
-//            storedVals[0][i] = storedVals[0][i+1];
-//            storedVals[1][i] = storedVals[1][i+1];
-//            storedVals[2][i] = storedVals[2][i+1];
         }
         storedVals[0][READINGS_SAVED-1] = x;
         storedVals[1][READINGS_SAVED-1] = y;
@@ -59,3 +57,4 @@ public class AccelerometerEventListener implements SensorEventListener {
     }
 }
 
+//TODO: Once FSM done, create gameloop here with a timer
