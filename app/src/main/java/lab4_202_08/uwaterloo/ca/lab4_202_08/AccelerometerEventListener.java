@@ -1,8 +1,10 @@
 package lab4_202_08.uwaterloo.ca.lab4_202_08;
 
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.util.Log;
 import android.widget.TextView;
 
 import ca.uwaterloo.sensortoy.LineGraphView;
@@ -13,23 +15,53 @@ import ca.uwaterloo.sensortoy.LineGraphView;
 
 public class AccelerometerEventListener implements SensorEventListener {
     TextView output;
-    TextView direction;
+    TextView directionView;
     LineGraphView outGraph;
+    private myFSM[] myFSMs = new myFSM[2]; //x, y/z
+    private int myFSMCounter;
+    private final int FSM_COUNTER_DEFAULT = 35; //number of readings to take for determining state
     private final int READINGS_SAVED = 100;
     public float[][] storedVals = new float[3][READINGS_SAVED];
     public float[] filteredReading = {0,0,0};
-    final float FILTER_CONSTANT = 6;
-    final float X_THRESH = 0;
-    final float Y_THRESH = 0;
+    private final float FILTER_CONSTANT = 6.0f;
     //constructor
-    public AccelerometerEventListener(TextView outputView, LineGraphView graph, TextView directionView) {
+    public AccelerometerEventListener(TextView outputView, LineGraphView graph, TextView dir) {
         output = outputView;
         outGraph = graph;
-        direction = directionView;
+        directionView = dir;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < READINGS_SAVED; j++)
+                storedVals[i][j] = 0.0f;
+
+        myFSMs[0] = new myFSM();
+        myFSMs[1] = new myFSM();
+
+        myFSMCounter = FSM_COUNTER_DEFAULT;
     }
 
     public void onAccuracyChanged(Sensor s, int i) {}
 
+    private void determineGesture() {
+        myFSM.mySig[] sigs = new myFSM.mySig[2];
+
+        for (int i = 0; i < 2; i++) {
+            sigs[i] = myFSMs[i].getSignature();
+            myFSMs[i].resetFSM();
+        }
+        Log.e("State[0] ", sigs[0].toString());
+        Log.e("State[1] ", sigs[1].toString());
+        if (sigs[0] == myFSM.mySig.SIG_A && sigs[1] == myFSM.mySig.SIG_X) {
+            directionView.setText("RIGHT");
+        } else if (sigs[0] == myFSM.mySig.SIG_B && sigs[1] == myFSM.mySig.SIG_X) {
+            directionView.setText("LEFT");
+        } else if (sigs[0] == myFSM.mySig.SIG_X && sigs[1] == myFSM.mySig.SIG_A) {
+            directionView.setText("DOWN");
+        } else if (sigs[0] == myFSM.mySig.SIG_X && sigs[1] == myFSM.mySig.SIG_B) {
+            directionView.setText("UP");
+        } else {
+            directionView.setText("N/A");
+        }
+    }
     public void onSensorChanged(SensorEvent se) {
         if (se.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
             //Filtering reading based on filter constant
@@ -38,6 +70,34 @@ public class AccelerometerEventListener implements SensorEventListener {
             }
 
             storeValue(filteredReading[0], filteredReading[1], filteredReading[2]);
+
+            if (myFSMCounter > 0) {
+
+                boolean reductionFlag = false;
+                /*
+                for (int i = 0; i < 2; i++) {
+                    myFSMs[i].supplyInput(storedVals[i][99]);
+                    if (myFSMs[i].getState() != myFSM.FSMState.WAIT)
+                        reductionFlag = true;
+                }
+                */
+                myFSMs[0].supplyInput(storedVals[0][99]);
+                myFSMs[1].supplyInput(storedVals[2][99]);
+                if (myFSMs[0].getState() != myFSM.FSMState.WAIT || myFSMs[1].getState() != myFSM.FSMState.WAIT)
+                    reductionFlag = true;
+
+                if (reductionFlag)
+                    myFSMCounter--;
+            } else if (myFSMCounter <= 0) {
+                determineGesture();
+                myFSMCounter = FSM_COUNTER_DEFAULT;
+            }
+
+            if (myFSMs[0].isReady() && myFSMs[1].isReady())
+                directionView.setTextColor(Color.GREEN);
+            else
+                directionView.setTextColor(Color.RED);
+
             outGraph.addPoint(filteredReading);
             output.setText(String.format("X:%.3f\nY:%.3f \nZ:%.3f", filteredReading[0], filteredReading[1], filteredReading[2]));
         }
