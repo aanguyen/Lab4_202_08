@@ -1,4 +1,4 @@
-package lab4_202_08.uwaterloo.ca.lab4_202_08;
+package motion_2048.uwaterloo.ca.lab4_202_08;
 
 /**
  * Created by Andrew on 2017-12-08.
@@ -12,8 +12,8 @@ public class myFSM {
     private mySig Signature;
 
     //TODO: redo signature A constants and signature B constants based on device
-    private final float[] THRESHOLD_A = {0.6f, 2.0f};
-    private final float[] THRESHOLD_B = {-0.6f, -2.0f};
+    private final float[] THRESHOLD_A = {0.8f, 1.8f};
+    private final float[] THRESHOLD_B = {-0.8f, -1.8f};
 
     private float previousInput;
 

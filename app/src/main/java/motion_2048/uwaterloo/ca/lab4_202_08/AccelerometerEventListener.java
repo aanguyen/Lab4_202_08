@@ -1,4 +1,4 @@
-package lab4_202_08.uwaterloo.ca.lab4_202_08;
+package motion_2048.uwaterloo.ca.lab4_202_08;
 
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -7,16 +7,12 @@ import android.hardware.SensorEventListener;
 import android.util.Log;
 import android.widget.TextView;
 
-import ca.uwaterloo.sensortoy.LineGraphView;
-
 /**
  * Created by Andrew on 2017-09-21.
  */
 
 public class AccelerometerEventListener implements SensorEventListener {
-    TextView output;
     TextView directionView;
-    LineGraphView outGraph;
     private myFSM[] myFSMs = new myFSM[2]; //x, y/z
     private int myFSMCounter;
     private final int FSM_COUNTER_DEFAULT = 35; //number of readings to take for determining state
@@ -25,9 +21,7 @@ public class AccelerometerEventListener implements SensorEventListener {
     public float[] filteredReading = {0,0,0};
     private final float FILTER_CONSTANT = 6.0f;
     //constructor
-    public AccelerometerEventListener(TextView outputView, LineGraphView graph, TextView dir) {
-        output = outputView;
-        outGraph = graph;
+    public AccelerometerEventListener(TextView dir) {
         directionView = dir;
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < READINGS_SAVED; j++)
@@ -48,18 +42,21 @@ public class AccelerometerEventListener implements SensorEventListener {
             sigs[i] = myFSMs[i].getSignature();
             myFSMs[i].resetFSM();
         }
-        Log.e("State[0] ", sigs[0].toString());
-        Log.e("State[1] ", sigs[1].toString());
         if (sigs[0] == myFSM.mySig.SIG_A && sigs[1] == myFSM.mySig.SIG_X) {
             directionView.setText("RIGHT");
+            Log.e("Gesture: ", "right");
         } else if (sigs[0] == myFSM.mySig.SIG_B && sigs[1] == myFSM.mySig.SIG_X) {
             directionView.setText("LEFT");
+            Log.e("Gesture: ", "left");
         } else if (sigs[0] == myFSM.mySig.SIG_X && sigs[1] == myFSM.mySig.SIG_A) {
             directionView.setText("DOWN");
+            Log.e("Gesture: ", "down");
         } else if (sigs[0] == myFSM.mySig.SIG_X && sigs[1] == myFSM.mySig.SIG_B) {
             directionView.setText("UP");
+            Log.e("Gesture: ", "up");
         } else {
             directionView.setText("N/A");
+            Log.e("Gesture: ", "break");
         }
     }
     public void onSensorChanged(SensorEvent se) {
@@ -97,9 +94,6 @@ public class AccelerometerEventListener implements SensorEventListener {
                 directionView.setTextColor(Color.GREEN);
             else
                 directionView.setTextColor(Color.RED);
-
-            outGraph.addPoint(filteredReading);
-            output.setText(String.format("X:%.3f\nY:%.3f \nZ:%.3f", filteredReading[0], filteredReading[1], filteredReading[2]));
         }
     }
     private void storeValue(float x, float y, float z) {

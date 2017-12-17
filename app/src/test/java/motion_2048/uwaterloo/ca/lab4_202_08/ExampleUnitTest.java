@@ -1,4 +1,4 @@
-package lab4_202_08.uwaterloo.ca.lab4_202_08;
+package motion_2048.uwaterloo.ca.lab4_202_08;
 
 import org.junit.Test;
 

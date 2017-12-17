@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
     defaultConfig {
-        applicationId "lab4_202_08.uwaterloo.ca.lab4_202_08"
+        applicationId "motion_2048.uwaterloo.ca.lab4_202_08"
         minSdkVersion 13
         targetSdkVersion 25
         versionCode 1
