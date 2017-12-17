@@ -11,7 +11,6 @@ public class myFSM {
     enum mySig {SIG_A, SIG_B, SIG_X};
     private mySig Signature;
 
-    //TODO: redo signature A constants and signature B constants based on device
     private final float[] THRESHOLD_A = {0.8f, 1.8f};
     private final float[] THRESHOLD_B = {-0.8f, -1.8f};
 
