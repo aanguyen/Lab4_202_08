@@ -18,8 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
         //These resolutions specifically made for Galaxy S7 FHD setting
         final RelativeLayout rl = (RelativeLayout) findViewById(R.id.relative_layout);
-        rl.getLayoutParams().height = 1000;
-        rl.getLayoutParams().width = 1000;
+        rl.getLayoutParams().height = 1080;
+        rl.getLayoutParams().width = 1080;
         rl.setBackgroundResource(R.drawable.gameboard);
 
         //Set textviews and layout stuff here

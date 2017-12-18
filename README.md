@@ -2,5 +2,5 @@
 
 
 ### To do:
-+ Get new data for each direction  
-+ Create state machine to determine direction
++ Fix up gameboard aspect ratio
++ Complete gameblock class
